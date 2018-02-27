@@ -1,0 +1,16 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row">
+		<div class="col-md-12"><h1>List of Categories</h1></div>
+	</div>
+	<br>
+	<a href="{{ url_for('newCategory') }}">New Category</a>
+	<div class="row">
+		<div class="col-md-8">
+			{% for c in categories %}
+			<p>{{ c.name }}</p>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

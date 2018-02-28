@@ -1,16 +1,81 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "header.html" %}
-	<div class="row">
-		<div class="col-md-12"><h1>List of Categories</h1></div>
+
+	<div class="row divider green">
+		<div class="col-12 col-md-12 col-lg-12"></div>
 	</div>
-	<br>
-	<a href="{{ url_for('newCategory') }}">New Category</a>
-	<div class="row">
-		<div class="col-md-8">
-			{% for c in categories %}
-			<p>{{ c.name }}</p>
-			{% endfor %}
+	<div class="row banner profile">
+		<div class="col-1 col-md-1 col-lg-1"></div>
+		<div class="col-8 col-md-8 col-lg-8 padding-none">
+			<h1>Catalog Project</h1>
+		</div>
+		<div class="col-3 col-md-3 col-lg-3 padding-top">
+			<figure class="creator">
+				<img src="{{ login_session['picture'] }}">
+				<p>{{ login_session['username'] }}</p>
+			</figure>
 		</div>
 	</div>
+
+	<div class = 'flash'>
+	{% with messages = get_flashed_messages() %}
+      	{% if messages %}
+	        <ul>
+	        {% for message in messages %}
+	            <li> <strong> {{ message }} </strong> </li>
+	        {% endfor %}
+	        </ul>
+       	{% endif %}
+    {% endwith %}
+	</div>
+	<br>
+	{% if login_session['user_id'] %}
+	<a href="{{ url_for('newCategory') }}"><button class="btn btn-success">New Category</button></a>
+	<br><br>
+	{% endif %}
+	<div class="row">
+			<h3>Categories:</h3>
+			<div class="col-2 col-md-2 col-lg-2 nopadding">
+				<div class="tab">
+					{% for c in categories %}
+						<button class="tablinks" onclick="openCity(event, '{{c.id}}')">{{ c.name }}</button>
+					{% endfor %}
+				</div>
+			</div>
+			<div class="col-10 col-md-10 col-lg-10 nopadding">
+				{% for c in categories %}
+					<div id="{{c.id}}" class="tabcontent">
+						<div class="row padding">
+							<div class="col-10 col-md-10 col-lg-10 content">
+								<h2>{{c.name}}</h2>
+					  			<h4>{{c.description}}</h4>
+					  			{% if c.user_id == login_session['user_id'] %}
+						  			<a href="{{ url_for('editCategory', category_id = c.id) }}"><button type="submit" class="btn btn-primary" id="submit" type="submit">
+									<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Edit</button></a>
+									<a href="{{ url_for('deleteCategory', category_id = c.id) }}"><button type="submit" class="btn btn-danger" id="submit" type="submit">
+									<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Delete</button></a>
+									<a href="{{ url_for('newItem', category_id = c.id) }}"><button class="btn btn-success">New Item</button></a>
+									<br><br>
+								{% endif %}
+
+					  			{% for i in items %}
+					  				{% if i.category_id == c.id %}
+					  					<ul>
+					  						<li>{{ i.name }}</li>
+					  						<p>{{ i.description }}</p>
+					  						<a href="{{ url_for('editItem', category_id = c.id, item_id = i.id) }}">Edit</a>
+					  						<a href="{{ url_for('deleteItem', category_id = c.id, item_id = i.id) }}">Delete</a>
+					  					</ul>
+					  				{% endif %}
+					  			{% endfor %}
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+	</div>
+
+	
+
 {% endblock %}
